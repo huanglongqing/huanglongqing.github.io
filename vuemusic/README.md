@@ -2,6 +2,9 @@
 
 > 基于vue的音乐webappvue
 
+访问项目
+http:106.14.112.174/music
+
 ## Build Setup
 
 ``` bash
