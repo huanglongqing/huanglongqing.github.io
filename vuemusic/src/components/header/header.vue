@@ -18,18 +18,21 @@
 
   .header
     position: relative
+    box-sizing: border-box 
     height: 44px
     text-align: center
-    color: $color-theme
+    background-color: $color-theme
+    color: $color-background
     font-size: 0
     .icon
       display: inline-block
       vertical-align: top
       margin-top: 6px
-      width: 30px
+      width: 32px
       height: 32px
       margin-right: 9px
       bg-image('logo')
+      background-repeat: no-repeat
       background-size: 30px 32px
     .text
       display: inline-block
@@ -44,5 +47,5 @@
         display: block
         padding: 12px
         font-size: 20px
-        color: $color-theme
+        color: $color-background
 </style>

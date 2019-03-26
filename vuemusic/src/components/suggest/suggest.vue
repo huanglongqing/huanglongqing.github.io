@@ -10,7 +10,7 @@
           <p class="text" v-html="getName(item)" :class="{'singer':isSinger(item)}"></p>
         </div>
       </li>
-      <loading v-show="hasMore" title=""></loading>
+      <loading v-show="showLoading" title=""></loading>
     </ul>
     <div v-show="!hasMore && !result.length" class="no-result-wrapper">
       <no-result :title="noResultTitle"></no-result>
@@ -50,6 +50,11 @@
         hasMore: true,
         noResultTitle: '暂无搜索结果',
         beforeScroll: true
+      }
+    },
+    computed:{
+      showLoading(){
+        return this.hasMore && this.result.length >= PERPAGE
       }
     },
     methods:{
@@ -114,7 +119,6 @@
           if(res.code === ERR_OK){
             this._genResult(res.data).then((result) => {
               this.result = result;
-              console.log(this.result)
             })
             this._checkMore(res.data);
           }         
@@ -196,7 +200,7 @@
         .text
           no-wrap()
           &.singer
-            color: $color-text-l
+            color: $color-text
     .no-result-wrapper
       position: absolute
       width: 100%

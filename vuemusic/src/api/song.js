@@ -6,7 +6,7 @@ import { ERR_OK } from 'api/config'
 const debug = process.env.NODE_ENV !== 'production'
 
 export function getLyric(mid) {
-  const url = debug ? '/api/lyric' : 'http://ustbhuangyi.com/music/api/lyric'
+  const url = debug ? '/api/lyric' : 'http://106.14.112.174/music/api/lyric'
 
   const data = Object.assign({}, commonParams, {
     songmid: mid,
@@ -26,7 +26,7 @@ export function getLyric(mid) {
 }
 
 export function getSongsUrl(songs) {
-  const url = debug ? '/api/getPurlUrl' : 'http://ustbhuangyi.com/music/api/getPurlUrl'
+  const url = debug ? '/api/getPurlUrl' : 'http://106.14.112.174/music/api/getPurlUrl'
 
   let mids = []
   let types = []
@@ -39,7 +39,6 @@ export function getSongsUrl(songs) {
   const urlMid = genUrlMid(mids, types)
 
   const data = Object.assign({}, commonParams, {
-    g_tk: 5381,
     format: 'json',
     platform: 'h5',
     needNewCode: 1,
@@ -58,9 +57,14 @@ export function getSongsUrl(songs) {
         if (res.code === ERR_OK) {
           let urlMid = res.req_0
           if (urlMid && urlMid.code === ERR_OK) {
-            const info = urlMid.data.midurlinfo[0]
-            if (info && info.purl) {
-              resolve(urlMid.data.midurlinfo)
+            const purlMap = {}
+            urlMid.data.midurlinfo.forEach((item) => {
+              if (item.purl) {
+                purlMap[item.songmid] = item.purl
+              }
+            })
+            if (Object.keys(purlMap).length > 0) {
+              resolve(purlMap)
             } else {
               retry()
             }

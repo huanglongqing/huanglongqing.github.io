@@ -109,7 +109,7 @@
           padding: 0 20px
           height: 100px
           overflow: hidden
-          background: $color-highlight-background
+          background: $color-background-d
           color: $color-text-d
           font-size: $font-size-small
           .song

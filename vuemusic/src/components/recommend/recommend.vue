@@ -4,8 +4,8 @@
         <div>
           <div class="slider-wrapper" v-if="recommends.length">
             <slider>
-              <div v-for="(item,index) in recommends"
-                    :key="index"
+              <div v-for="item in recommends"
+                    :key="item.id"
               >
                 <a :href="item.linkUrl">
                   <img :src="item.picUrl" @load="imageLoaded">
@@ -17,7 +17,7 @@
           <div class="recommend-list">
             <h1 class="list-title">热门歌单推荐</h1>
             <ul>
-              <li class="item" v-for="(item,index) in discList" :key="index" @click="selectItem(item)">
+              <li class="item" v-for="item in discList" :key="item.dissid" @click="selectItem(item)">
                 <div class="icon">
                   <img width="60" height="60" v-lazy="item.imgurl" /> 
                 </div>
@@ -119,16 +119,18 @@
         overflow: hidden
       .recommend-list
         .list-title
-          height: 65px
-          line-height: 65px
+          height: 55px
+          line-height: 55px
           text-align: center
           font-size: $font-size-medium
           color: $color-theme
+          background-color: #fff
         .item
           display: flex
           box-sizing: border-box
           align-items: center
-          padding: 0 20px 20px 20px
+          padding: 10px 20px
+          border-bottom: 1px solid $color-background-d
           .icon
             flex: 0 0 60px
             width: 60px

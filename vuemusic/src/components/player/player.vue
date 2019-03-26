@@ -43,7 +43,7 @@
           <div class="progress-wrapper">
             <span class="time time-l">{{formatTime(currentTime)}}</span>
             <div class="progress-bar-wrapper">
-              <progress-bar :percent="percent" :fullScreen="fullScreen" @changePercent="changePercent" ref="progressBar"></progress-bar>
+              <progress-bar :barCanClick="barCanClick" :percent="percent" :fullScreen="fullScreen" @changePercent="changePercent" ref="progressBar"></progress-bar>
             </div>
             <span class="time time-r">{{formatTime(currentSong.duration)}}</span>
           </div>
@@ -102,6 +102,7 @@
   import Playlist from 'components/playlist/playlist'
   import {playerMixin} from 'common/js/mixin'
   import {playMode} from 'common/js/config'
+  import { setTimeout } from 'timers';
 
   const transform = prefixStyle('transform')
   const transition = prefixStyle('transition')
@@ -116,7 +117,8 @@
         curLyric: null,
         curLyricLineNum: 0,
         curShow: 'cd',
-        playingLyric: '歌词加载中...'
+        playingLyric: '歌词加载中...',
+        barCanClick: false
       }
     },
     created(){
@@ -158,6 +160,11 @@
       open(){
         this.setFullScreen(true);
         this.$refs.progressBar.refresh();
+        this.curShow = 'cd';
+        let lyricStyle = this.$refs.lyricList.$el.style;
+        let cdStyle = this.$refs.middleL.style;
+        lyricStyle[transform] = `translate3d(0, 0, 0)`;
+        cdStyle.opacity = 1;
       },
       //cd飞入动画
       enter(el,done){
@@ -211,50 +218,64 @@
         }
       },
       //上一首/下一首
-      prev() {
-        if(!this.musicReady){
-          return;
-        }
+      prev() { 
         if(this.playlist.length === 1){
           this.loop();
           return
-        }else{
-          let index = this.currentIndex - 1;
-          if(index < 0){
-            index = this.playlist.length - 1;
-          }
-          this.setCurrentIndex(index);
-          if(!this.playing){
-            this.togglePlay();
-          }
-          this.musicReady = false;
+        }         
+        if(!this.musicReady){
+          return;
         }
+        this.currentTime = 0;
+        if(this.curLyric){
+          this.curLyric.stop();
+          this.curLyric = null;
+        }
+        let index = this.currentIndex - 1;
+        if(index < 0){
+          index = this.playlist.length - 1;
+        }
+        this.setCurrentIndex(index);
+        if(!this.playing){
+          this.togglePlay();
+        }
+        this.musicReady = false;
       },
       next() {
-        if(!this.musicReady){
-          return;
-        }
         if(this.playlist.length === 1){
           this.loop();
           return
-        }else{
-          let index = this.currentIndex + 1;
-          if(index > this.playlist.length - 1){
-            index = 0;
-          }
-          this.setCurrentIndex(index);
-          if(!this.playing){
-            this.togglePlay();
-          }
-          this.musicReady = false;
-        }        
+        }
+        if(!this.musicReady){
+          return;
+        }
+        this.currentTime = 0;
+        if(this.curLyric){
+          this.curLyric.stop();
+          this.curLyric = null;
+        }
+        let index = this.currentIndex + 1;
+        if(index > this.playlist.length - 1){
+          index = 0;
+        }
+        this.setCurrentIndex(index);
+        if(!this.playing){
+          this.togglePlay();
+        }
+        this.musicReady = false;      
       },
       //播放结束
       end() {
         if(this.mode === playMode.loop){
-          this.loop();
+          setTimeout(()=>{
+            this.loop();
+            this.$refs.audio.play();
+          }, 0)
         }else{
-          this.next();
+          setTimeout(()=>{
+            this.next();
+            this.$refs.audio.play();
+          }, 0)
         }
       },
       //单曲循环播放
@@ -268,10 +289,16 @@
       //歌曲加载就绪/出错
       ready() {
         this.musicReady = true;
+        this.barCanClick = true;
         this.savePlayHistory(this.currentSong);
+        if(this.curLyric){
+          this.curLyric.play();
+          this.curLyric.seek(this.currentTime * 1000)
+        }
       },
       error() {
-        this.musicReady = true;  //歌曲加载失败也不会影响按键的使用
+        this.musicReady = true;
+        this.next();  //歌曲加载失败也不会影响按键的使用
       },
       //歌曲当前时间刷新
       updataTime(e) {
@@ -304,15 +331,16 @@
             return
           }
           this.curLyric = new Lyric(lyric, this.handleLyric);
+          this.curLyric.seek(0);
           this.playingLyric = this.curLyric.lines.length ? this.curLyric.lines[0].txt : this.curLyric.lrc.slice(10);
-          if(this.playing){
+          if(this.playing && this.musicReady){
             this.curLyric.play();
             setTimeout(()=>{
               if(this.playing){
                 let curTime = this.$refs.audio.currentTime;
                 this.curLyric.seek(curTime * 1000)
               }
-            }, 2000)
+            }, 20)
           }
         }).catch(()=>{
           this.curLyric = null;
@@ -345,7 +373,7 @@
         let touch = e.touches[0];
         let deltaX = touch.pageX - this.touch.startX;
         let deltaY = touch.pageY - this.touch.startY;
-        if(Math.abs(deltaX) < Math.abs(deltaY)){
+        if(Math.abs(deltaY) > 50){
           return
         }
         let lyricLeft = this.curShow === 'cd' ? 0 : -window.innerWidth;
@@ -361,7 +389,7 @@
       middleTouchEnd(e){
         let offsetWidth, opacity
         if(this.curShow === 'cd'){
-          if(this.touch.percent > 0.25){
+          if(this.touch.percent > 0.15){
             offsetWidth = -window.innerWidth;
             opacity = 0;
             this.curShow = 'lyric';
@@ -370,7 +398,7 @@
             opacity = 1;
           }
         }else{
-          if(this.touch.percent < 0.75){
+          if(this.touch.percent < 0.85){
             offsetWidth = 0;
             opacity = 1;
             this.curShow = 'cd';
@@ -413,6 +441,8 @@
         if(!newSong.id || !newSong.url || newSong.id === oldSong.id){
           return
         }
+        this.barCanClick = false;
+        this.currentTime = 0;
         if(this.curLyric){
           this.curLyric.stop();
           this.playingLyric = '歌词加载中...';
@@ -421,7 +451,7 @@
         this.timer = setTimeout(()=>{
           this.getLyric();
           this.$refs.audio.play();
-        }, 20)
+        }, 200)
       },
       playing(newState){
         this.$nextTick(()=>{
@@ -451,7 +481,7 @@
       top: 0
       bottom: 0
       z-index: 150
-      background: $color-background
+      background: $play-background
       .background
         position: absolute
         left: 0
@@ -473,21 +503,19 @@
             display: block
             padding: 9px
             font-size: $font-size-large-x
-            color: $color-theme
+            color: $color-background
             transform: rotate(-90deg)
         .title
-          width: 70%
-          margin: 0 auto
           line-height: 40px
           text-align: center
           no-wrap()
           font-size: $font-size-large
-          color: $color-text
+          color: $color-background-d
         .subtitle
           line-height: 20px
           text-align: center
           font-size: $font-size-medium
-          color: $color-text
+          color: $color-background-d
       .middle
         position: fixed
         width: 100%
@@ -524,14 +552,14 @@
                 border-radius: 50%
           .playing-lyric-wrapper
             width: 80%
-            margin: 30px auto 0 auto
+            margin: 15px auto 0 auto
             overflow: hidden
             text-align: center
             .playing-lyric
               height: 20px
               line-height: 20px
               font-size: $font-size-medium
-              color: $color-text-ll
+              color: $color-background
         .middle-r
           display: inline-block
           vertical-align: top
@@ -545,13 +573,13 @@
             text-align: center
             .text
               line-height: 32px
-              color: $color-text-l
+              color: $color-background-d
               font-size: $font-size-medium
               &.current
-                color: $color-text
+                color: $color-theme
       .bottom
         position: absolute
-        bottom: 50px
+        bottom: 30px
         width: 100%
         .dot-wrapper
           text-align: center
@@ -563,11 +591,11 @@
             width: 8px
             height: 8px
             border-radius: 50%
-            background: $color-text-l
+            background: $color-dialog-background
             &.active
               width: 20px
               border-radius: 5px
-              background: $color-text-ll
+              background: $color-background
         .progress-wrapper
           display: flex
           align-items: center
@@ -575,7 +603,7 @@
           margin: 0px auto
           padding: 10px 0
           .time
-            color: $color-text
+            color: $color-background
             font-size: $font-size-small
             flex: 0 0 30px
             line-height: 30px
@@ -591,9 +619,9 @@
           align-items: center
           .icon
             flex: 1
-            color: $color-theme
+            color: $color-background
             &.disable
-              color: $color-theme-d
+              color: rgba(244, 244, 244, 0.3)
             i
               font-size: 30px
           .i-left
@@ -626,7 +654,8 @@
       z-index: 180
       width: 100%
       height: 60px
-      background: $color-highlight-background
+      background: $color-background
+      box-shadow: 0 0 5px #999
       &.mini-enter-active, &.mini-leave-active
         transition: all 0.4s
       &.mini-enter, &.mini-leave-to

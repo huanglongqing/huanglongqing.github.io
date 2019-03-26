@@ -91,4 +91,5 @@
           no-wrap()
           margin-top: 4px
           color: $color-text-d
+          font-size: $font-size-small
 </style>

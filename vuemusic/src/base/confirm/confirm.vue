@@ -64,7 +64,7 @@
     top: 0
     bottom: 0
     z-index: 998
-    background-color: $color-background-d
+    background-color: $color-text-d
     &.confirm-fade-enter-active
       animation: confirm-fadein 0.3s
       .confirm-content
@@ -78,13 +78,13 @@
       .confirm-content
         width: 270px
         border-radius: 13px
-        background: $color-highlight-background
+        background: $color-background
         .text
           padding: 19px 15px
           line-height: 22px
           text-align: center
           font-size: $font-size-large
-          color: $color-text-l
+          color: $color-text
         .operate
           display: flex
           align-items: center

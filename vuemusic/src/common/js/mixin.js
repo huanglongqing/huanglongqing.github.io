@@ -115,6 +115,7 @@ export const searchMixin = {
         },
         saveSearch(){
             this.saveSearchHistory(this.query);
+            this.$refs.searchBox.clear();
         },
         addQuery(query){
             this.$refs.searchBox.setQuery(query);
@@ -126,6 +127,9 @@ export const searchMixin = {
             'saveSearchHistory',
             'deleteSearchHistory',
         ])
+    },
+    deactivated(){
+        this.$refs.searchBox.clear();
     }
    
 }

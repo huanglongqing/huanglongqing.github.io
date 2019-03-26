@@ -112,7 +112,7 @@ export default {
       return new Array(len);
     }
   },
-  destroyed(){
+  deactivated(){
       clearTimeout(this.timer);
   }
 };
@@ -153,9 +153,9 @@ export default {
         width: 8px
         height: 8px
         border-radius: 50%
-        background: $color-text-l
+        background: $color-dialog-background
         &.active
-          width: 20px
+          width: 15px
           border-radius: 5px
-          background: $color-text-ll
+          background: $color-background
 </style>

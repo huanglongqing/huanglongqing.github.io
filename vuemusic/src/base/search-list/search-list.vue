@@ -3,8 +3,8 @@
     <transition-group name="list" tag="ul">
       <li class="search-item" v-for="item in searches" :key="item" @click="queryItem(item)">
         <span class="text">{{item}}</span>
-        <span class="icon">
-          <i class="icon-delete" @click.stop="deleteItem(item)"></i>
+        <span class="icon" @click.stop="deleteItem(item)">
+          <i class="icon-delete"></i>
         </span>
       </li>
     </transition-group>
@@ -46,8 +46,12 @@
         height: 0
       .text
         flex: 1
-        color: $color-text-l
+        color: $color-text-d
       .icon
+        width: 30px
+        height: 30px
+        line-height: 30px
+        text-align: center
         extend-click()
         .icon-delete
           color: $color-text-d

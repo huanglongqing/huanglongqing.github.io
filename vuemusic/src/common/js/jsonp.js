@@ -14,11 +14,20 @@ export default function jsonp(url, data, option) {
   })
 }
 
-function param(data) {
-  let url = '';
-  for (let key in data) {
+// function param(data) {
+//   let url = '';
+//   for (let key in data) {
+//     let val = data[key] !== undefined ? data[key] : ''
+//     url += `&${key}=${encodeURIComponent(val)}`
+//   }
+//   return url ? url.substring(1) : ''
+// }
+
+function param(data){
+  let urlArr = [];
+  for(let key in data){
     let val = data[key] !== undefined ? data[key] : ''
-    url += `&${key}=${encodeURIComponent(val)}`
+    urlArr.push(`${key}=${encodeURIComponent(val)}`)
   }
-  return url ? url.substring(1) : ''
+  return urlArr.join("&")
 }

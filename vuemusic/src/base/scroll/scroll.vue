@@ -6,7 +6,6 @@
 
 <script type="text/ecmascript-6">
   import BScroll from 'better-scroll'
-import { setInterval, setTimeout } from 'timers';
 
   export default {
     props: {

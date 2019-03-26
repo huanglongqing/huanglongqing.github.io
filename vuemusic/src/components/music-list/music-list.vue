@@ -19,7 +19,7 @@
         <song-list :songs="songs" @select="selectSong" :rank="rank"></song-list>
       </div>
       <div v-show="!songs.length" class="loading-container">
-        <loading :title="loadingTitle"></loading>
+        <loading title="正在加载歌曲..."></loading>
       </div>
     </scroll>
   </div>
@@ -59,23 +59,12 @@
     },
     data(){
       return{
-        scrollY: 0,
-        songListFlag: false
+        scrollY: 0
       }
     },
     computed:{
       bgStyle(){
         return `background-image:url(${this.bgImage})`;
-      },
-      loadingTitle(){
-        if(!this.songListFlag){
-          this.timer = setTimeout(()=>{
-            this.songListFlag = true;
-          },3000)
-          return '正在加载歌曲...'
-        }else{
-          return '获取数据失败'
-        }    
       }
     },
     created(){
@@ -138,7 +127,7 @@
         } else {
           this.$refs.bgImage.style.paddingTop = '70%'
           this.$refs.bgImage.style.height = 0
-          this.$refs.playBtn.style.display = ''
+          this.$refs.playBtn.style.display = 'block'
         }
 
         this.$refs.bgImage.style[transform] = `scale(${scale})`
@@ -175,7 +164,7 @@
         display: block
         padding: 10px
         font-size: $font-size-large-x
-        color: $color-theme
+        color: $color-background-d
     .title
       position: absolute
       top: 0
@@ -186,7 +175,7 @@
       text-align: center
       line-height: 40px
       font-size: $font-size-large
-      color: $color-text
+      color: $color-background
     .bg-image
       position: relative
       width: 100%
@@ -205,8 +194,8 @@
           padding: 7px 0
           margin: 0 auto
           text-align: center
-          border: 1px solid $color-theme
-          color: $color-theme
+          border: 1px solid $color-background-d
+          color: $color-background-d
           border-radius: 100px
           font-size: 0
           .icon-play

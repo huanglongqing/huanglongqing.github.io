@@ -1,6 +1,6 @@
 <template>
-  <div class="progress-bar-wrapper">
-    <div class="progress-bar" ref="progressBar" @click="progressClick">
+  <div class="progress-bar-wrapper" @click.stop="progressClick">
+    <div class="progress-bar" ref="progressBar">
       <div class="progress" ref="progress"></div>
       <div class="progress-btn-wrapper" ref="progressBtn"
           @touchstart.prevent="btnTouchStart" @touchmove.prevent="btnTouchMove" @touchend="btnTouchEnd"
@@ -24,6 +24,10 @@
         default: 0
       },
       fullScreen: {
+        type: Boolean,
+        default: true
+      },
+      barCanClick: {
         type: Boolean,
         default: true
       }
@@ -50,6 +54,9 @@
         this._emitChangePercent();
       },
       progressClick(e){
+        if(!this.barCanClick){
+          return
+        }
         const rect = this.$refs.progressBar.getBoundingClientRect();
         if(rect.right - e.pageX < PRO_BTN_WIDTH / 6){
           return
@@ -92,11 +99,12 @@
 
   .progress-bar-wrapper
     height: 30px
+    extend-click()
     .progress-bar
       position: relative
       top: 13px
       height: 4px
-      background: rgba(0, 0, 0, 0.3)
+      background: rgba(244, 244, 244, 0.3)
       .progress
         position: absolute
         height: 100%
@@ -114,7 +122,7 @@
           box-sizing: border-box
           width: 16px
           height: 16px
-          border: 3px solid $color-text
+          border: 3px solid #fff
           border-radius: 50%
           background: $color-theme
 </style>

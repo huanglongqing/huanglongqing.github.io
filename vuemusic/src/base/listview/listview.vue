@@ -1,10 +1,10 @@
 <template>
   <scroll class="listview" :data="data" ref="listview" :listenScroll="listenScroll" @scroll="scroll" :probeType="probeType">
     <ul>
-      <li v-for="(group,index) in data" :key="index" class="list-group" ref="list_group">
+      <li v-for="group in data" :key="group.title" class="list-group" ref="list_group">
         <h2 class="list-group-title">{{group.title}}</h2>
         <ul>
-          <li v-for="(item,index_1) in group.items" :key="index_1" class="list-group-item" @click="selectItem(item)">
+          <li v-for="item in group.items" :key="item.id" class="list-group-item" @click="selectItem(item)">
             <img class="avatar" v-lazy="item.avatar">
             <span class="name">{{item.name}}</span>
           </li>
@@ -17,7 +17,7 @@
           >
       <ul>
         <li v-for="(item,index) in titleCutArr" 
-        :key="index" class="item" :data-index="index" :class="{'current':curCutIndex===index}">{{item}}
+        :key="item" class="item" :data-index="index" :class="{'current':curCutIndex===index}">{{item}}
         <div class="bigTitle" v-show="curCutIndex===index&&bigTShow">{{item}}</div>
         </li>
       </ul>
@@ -34,11 +34,12 @@
 <script type="text/ecmascript-6">
   import Scroll from 'base/scroll/scroll'
   import Loading from 'base/loading/loading'
-  import {getData} from 'common/js/dom'
+  import {getData, prefixStyle} from 'common/js/dom'
   import { setTimeout, clearTimeout } from 'timers';
 
   const TITLE_HEIGHT = 30
-  const CUT_HEIGHT = 18
+  const CUT_HEIGHT = 16
+  const transform = prefixStyle('transform')
 
   export default {
     created(){
@@ -149,7 +150,7 @@
           return;
         }
         this.fixedTop = fixedTop;
-        this.$refs.fixed.style.transform = `translate3d(0, ${fixedTop}px, 0)`;
+        this.$refs.fixed.style[transform] = `translate3d(0, ${fixedTop}px, 0)`;
       }
     }
 
@@ -172,19 +173,20 @@
         line-height: 30px
         padding-left: 20px
         font-size: $font-size-small
-        color: $color-text-l
-        background: $color-highlight-background
+        color: $color-text-d
+        background: $color-background-d
       .list-group-item
         display: flex
         align-items: center
         padding: 10px 0 10px 30px
+        border-bottom: 1px solid $color-background-d
         .avatar
           width: 50px
           height: 50px
           border-radius: 50%
         .name
           margin-left: 20px
-          color: $color-text-l
+          color: $color-text-d
           font-size: $font-size-medium
     .list-title-cut
       position: absolute
@@ -193,43 +195,43 @@
       top: 50%
       transform: translateY(-50%)
       width: 20px
-      padding: 20px 0
+      padding: 10px 0
       border-radius: 10px
       text-align: center
-      background: $color-background-d
+      background: #eee
       font-family: Helvetica
       .item
         position: relative
-        padding: 3px
+        padding: 2px
         line-height: 1
-        color: $color-text-l
+        color: $color-text-d
         font-size: $font-size-small
         &.current
           color: $color-theme
         .bigTitle
           position: absolute
-          left: -40px
-          top: -5px
-          width: 30px
-          height: 30px
+          left: -70px
+          top: -11px
+          width: 40px
+          height: 40px
           border-radius: 50%
           text-align: center
-          line-height: 30px
-          background: $color-dialog-background
-          color: $color-theme
+          line-height: 40px
+          background: $color-theme
+          color: #eee
           font-size: $font-size-large
     .list-fixed
       position: absolute
-      top: 0
+      top: -1px
       left: 0
       width: 100%
       .fixed-title
-        height: 30px
-        line-height: 30px
+        height: 31px
+        line-height: 31px
         padding-left: 20px
         font-size: $font-size-small
-        color: $color-text-l
-        background: $color-highlight-background
+        color: $color-theme
+        background: $color-background-d
     .loading-container
       position: absolute
       width: 100%

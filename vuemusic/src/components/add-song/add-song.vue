@@ -90,6 +90,8 @@
       saveSearch(){
         this.saveSearchHistory(this.query);
         this.showTip();
+        this.$refs.searchBox.clear();
+        this.currentIndex = 1;
       },
       showTip(){
         this.$refs.topTip.show();

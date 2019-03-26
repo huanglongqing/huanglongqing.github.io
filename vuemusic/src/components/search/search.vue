@@ -114,6 +114,10 @@
   @import "~common/stylus/mixin"
 
   .search
+    position: fixed
+    width: 100%
+    top: 88px
+    bottom: 0
     .search-box-wrapper
       margin: 20px
     .shortcut-wrapper
@@ -129,15 +133,15 @@
           .title
             margin-bottom: 20px
             font-size: $font-size-medium
-            color: $color-text-l
+            color: $color-text-d
           .item
             display: inline-block
             padding: 5px 10px
             margin: 0 20px 10px 0
             border-radius: 6px
-            background: $color-highlight-background
+            background: $color-background-d
             font-size: $font-size-medium
-            color: $color-text-d
+            color: $color-text-l
         .search-history
           position: relative
           margin: 0 20px
@@ -146,7 +150,7 @@
             align-items: center
             height: 40px
             font-size: $font-size-medium
-            color: $color-text-l
+            color: $color-text-d
             .text
               flex: 1
             .clear

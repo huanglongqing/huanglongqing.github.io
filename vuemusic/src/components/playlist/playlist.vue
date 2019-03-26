@@ -142,7 +142,7 @@
     top: 0
     bottom: 0
     z-index: 200
-    background-color: $color-background-d
+    background-color: $color-text-d
     &.list-fade-enter-active, &.list-fade-leave-active
       transition: opacity 0.3s
       .list-wrapper
@@ -157,10 +157,11 @@
       left: 0
       bottom: 0
       width: 100%
-      background-color: $color-highlight-background
+      background-color: $color-background
       .list-header
         position: relative
         padding: 20px 30px 10px 20px
+        box-shadow: 0 0 1px #999
         .title
           display: flex
           align-items: center
@@ -171,7 +172,7 @@
           .text
             flex: 1
             font-size: $font-size-medium
-            color: $color-text-l
+            color: $color-text-d
           .clear
             extend-click()
             .icon-clear
@@ -184,10 +185,10 @@
           display: flex
           align-items: center
           height: 40px
-          padding: 0 30px 0 20px
+          padding: 0 0 0 20px
           overflow: hidden
           box-sizing: border-box
-          border-bottom: 1px solid $color-background
+          border-bottom: 1px solid $color-background-d
           &.list-enter-active, &.list-leave-active
             transition: all 0.1s
           &.list-enter, &.list-leave-to
@@ -195,21 +196,22 @@
           .current
             flex: 0 0 20px
             width: 20px
-            font-size: $font-size-small
-            color: $color-theme-d
+            font-size: $font-size-medium
+            color: $color-theme
           .text
             flex: 1
             no-wrap()
             font-size: $font-size-medium
-            color: $color-text-l
+            color: $color-text-d
           .like
             extend-click()
             margin-right: 15px
-            font-size: $font-size-small
+            font-size: $font-size-medium
             color: $color-theme
             .icon-favorite
               color: $color-sub-theme
           .delete
+            padding-right: 30px
             extend-click()
             font-size: $font-size-small
             color: $color-theme
@@ -233,5 +235,6 @@
         line-height: 50px
         background: $color-background
         font-size: $font-size-medium-x
-        color: $color-text-l
+        color: $color-text-d
+        box-shadow: 0 1px 5px #999
 </style>
